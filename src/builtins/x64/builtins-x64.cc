@@ -1229,6 +1229,45 @@ void Builtins::Generate_InterpreterEntryTrampoline(MacroAssembler* masm) {
   __ incl(
       FieldOperand(feedback_vector, FeedbackVector::kInvocationCountOffset));
 
+  // rcx is free
+  Register invocation_cnt = rcx;
+  __ movl(invocation_cnt,
+        FieldOperand(feedback_vector, FeedbackVector::kInvocationCountOffset));
+
+  Register optimize_cnt = r15;
+  __ movl(optimize_cnt,
+        FieldOperand(feedback_vector, FeedbackVector::kOptimizeCountOffset));
+
+  // __ cmpl(invocation_cnt, Immediate(5));
+  __ cmpl(invocation_cnt, optimize_cnt);
+  __ j(below, &push_stack_frame);
+
+  __ Push(rax);
+  __ Push(rdi);
+  __ Push(rdx);
+  __ Push(rsi);
+  __ Push(rbx);
+  __ Push(kScratchRegister);
+  __ Push(kInterpreterBytecodeArrayRegister);
+  __ Push(optimization_state);
+  {
+    FrameScope scope(masm, StackFrame::INTERNAL);
+
+    __ Push(closure);
+    __ CallRuntime(Runtime::kOptimizeFunctionOnNextCall, 1);
+    // __ CallRuntime(Runtime::kDebugPrint, 1);
+    __ Pop(closure);
+  }
+  __ Pop(optimization_state);
+  __ Pop(kInterpreterBytecodeArrayRegister);
+  __ Pop(kScratchRegister);
+  __ Pop(rbx);
+  __ Pop(rsi);
+  __ Pop(rdx);
+  __ Pop(rdi);
+  __ Pop(rax);
+
+
   // Open a frame scope to indicate that there is a frame on the stack.  The
   // MANUAL indicates that the scope shouldn't actually generate code to set up
   // the frame (that is done below).

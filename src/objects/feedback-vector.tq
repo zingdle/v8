@@ -15,6 +15,7 @@ bitfield struct FeedbackVectorFlags extends uint32 {
 extern class FeedbackVector extends HeapObject {
   const length: int32;
   invocation_count: int32;
+  optimize_count: int32;
   profiler_ticks: int32;
   // TODO(turboprop, v8:11010): This field could be removed by changing the
   // tier up checks for Turboprop. If removing this field also check v8:9287.

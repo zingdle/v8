@@ -502,6 +502,7 @@ Handle<FeedbackVector> Factory::NewFeedbackVector(
                                   kReleaseStore);
   vector.set_length(length);
   vector.set_invocation_count(0);
+  vector.set_optimize_count(5);
   vector.set_profiler_ticks(0);
   vector.InitializeOptimizationState();
   vector.set_closure_feedback_cell_array(*closure_feedback_cell_array);
