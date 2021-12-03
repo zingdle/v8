@@ -461,6 +461,13 @@ V8_INLINE Token::Value Scanner::ScanSingleToken() {
               token = SkipSourceURLComment();
               continue;
             }
+            if (c == '/') {
+              Advance();
+              Advance();
+              Advance();
+              Advance();
+              return Token::FUNCTION_ANNOTATION;
+            }
             token = SkipSingleLineComment();
             continue;
           }

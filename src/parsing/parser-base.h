@@ -5160,8 +5160,23 @@ ParserBase<Impl>::ParseStatementListItem() {
   // LexicalDeclaration[In, Yield] :
   //   LetOrConst BindingList[?In, ?Yield] ;
 
+  uint32_t value;
   switch (peek()) {
+    case Token::FUNCTION_ANNOTATION:
+      Consume(Token::FUNCTION_ANNOTATION);
+      assert(peek() == Token::FUNCTION_OPTIMIZE);
+      Consume(Token::FUNCTION_OPTIMIZE);
+      assert(peek() == Token::LPAREN);
+      Consume(Token::LPAREN);
+      assert(peek() == Token::SMI);
+      value = scanner()->smi_value();
+      PrintF("value: %d\n", value);
+      Consume(Token::SMI);
+      assert(peek() == Token::RPAREN);
+      Consume(Token::RPAREN);
+      [[fallthrough]];
     case Token::FUNCTION:
+      assert(peek() == Token::FUNCTION);
       return ParseHoistableDeclaration(nullptr, false);
     case Token::CLASS:
       Consume(Token::CLASS);
