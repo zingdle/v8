@@ -2190,6 +2190,8 @@ Handle<JSObject> Factory::NewFunctionPrototype(Handle<JSFunction> function) {
                           DONT_ENUM);
   }
 
+  function->shared().set_force_optimize(false);
+
   return prototype;
 }
 

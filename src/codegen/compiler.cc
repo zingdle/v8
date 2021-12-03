@@ -1066,7 +1066,7 @@ MaybeHandle<Code> GetOptimizedCode(
 
   // Do not use TurboFan if optimization is disabled or function doesn't pass
   // turbo_filter.
-  if (!FLAG_opt || !shared->PassesFilter(FLAG_turbo_filter)) return {};
+  if ((!FLAG_opt && !function->shared().force_optimize())|| !shared->PassesFilter(FLAG_turbo_filter)) return {};
 
   // If code was pending optimization for testing, remove the entry from the
   // table that was preventing the bytecode from being flushed.

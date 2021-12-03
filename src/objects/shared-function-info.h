@@ -420,6 +420,9 @@ class SharedFunctionInfo
   DECL_BOOLEAN_ACCESSORS(class_scope_has_private_brand)
   DECL_BOOLEAN_ACCESSORS(has_static_private_methods_or_accessors)
 
+  // turbo optimize
+  DECL_BOOLEAN_ACCESSORS(force_optimize)
+
   // Is this function a top-level function (scripts, evals).
   DECL_BOOLEAN_ACCESSORS(is_toplevel)
 

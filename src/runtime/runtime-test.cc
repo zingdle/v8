@@ -251,7 +251,7 @@ bool CanOptimizeFunction(Handle<JSFunction> function, Isolate* isolate,
     return CrashUnlessFuzzingReturnFalse(isolate);
   }
 
-  if (!FLAG_opt) return false;
+  if (!FLAG_opt && !function->shared().force_optimize()) return false;
 
   if (function->shared().optimization_disabled() &&
       function->shared().disabled_optimization_reason() ==
@@ -291,6 +291,9 @@ Object OptimizeFunctionOnNextCall(RuntimeArguments& args, Isolate* isolate,
   CONVERT_ARG_HANDLE_CHECKED(Object, function_object, 0);
   if (!function_object->IsJSFunction()) return CrashUnlessFuzzing(isolate);
   Handle<JSFunction> function = Handle<JSFunction>::cast(function_object);
+
+  // PrintF("handle base %lu\n", function->address());
+  function->shared().set_force_optimize(true);
 
   IsCompiledScope is_compiled_scope(
       function->shared().is_compiled_scope(isolate));
@@ -878,6 +881,7 @@ RUNTIME_FUNCTION(Runtime_TakeHeapSnapshot) {
 
 static void DebugPrintImpl(MaybeObject maybe_object) {
   StdoutStream os;
+// /*
   if (maybe_object->IsCleared()) {
     os << "[weak cleared]";
   } else {
@@ -897,6 +901,7 @@ static void DebugPrintImpl(MaybeObject maybe_object) {
     os << Brief(object);
 #endif
   }
+ // */
   os << std::endl;
 }
 
