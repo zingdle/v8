@@ -5169,9 +5169,9 @@ ParserBase<Impl>::ParseStatementListItem() {
       assert(peek() == Token::LPAREN);
       Consume(Token::LPAREN);
       assert(peek() == Token::SMI);
+      Consume(Token::SMI);
       value = scanner()->smi_value();
       PrintF("value: %d\n", value);
-      Consume(Token::SMI);
       assert(peek() == Token::RPAREN);
       Consume(Token::RPAREN);
       [[fallthrough]];
