@@ -1292,6 +1292,7 @@ MaybeHandle<SharedFunctionInfo> CompileToplevel(
                          : RuntimeCallCounterId::kCompileScript);
   VMState<BYTECODE_COMPILER> state(isolate);
   if (parse_info->literal() == nullptr &&
+      // enter here
       !parsing::ParseProgram(parse_info, script, maybe_outer_scope_info,
                              isolate, parsing::ReportStatisticsMode::kYes)) {
     FailWithPendingException(isolate, script, parse_info,
@@ -1316,6 +1317,7 @@ MaybeHandle<SharedFunctionInfo> CompileToplevel(
       finalize_unoptimized_compilation_data_list;
 
   // Prepare and execute compilation of the outer-most function.
+  // enter here
   if (!IterativelyExecuteAndFinalizeUnoptimizedCompilationJobs(
           isolate, shared_info, script, parse_info, isolate->allocator(),
           is_compiled_scope, &finalize_unoptimized_compilation_data_list,
@@ -2899,6 +2901,7 @@ MaybeHandle<SharedFunctionInfo> GetSharedFunctionInfoForScriptImpl(
 
       flags.set_is_eager(compile_options == ScriptCompiler::kEagerCompile);
 
+      // enter here
       maybe_result =
           CompileScriptOnMainThread(flags, source, script_details, natives,
                                     extension, isolate, &is_compiled_scope);

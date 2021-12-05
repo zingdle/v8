@@ -56,6 +56,7 @@ bool ParseProgram(ParseInfo* info, Handle<Script> script,
 
   // Ok to use Isolate here; this function is only called in the main thread.
   DCHECK(parser.parsing_on_main_thread_);
+  // enter here
   parser.ParseProgram(isolate, script, info, maybe_outer_scope_info);
   MaybeReportStatistics(info, script, isolate, &parser, mode);
   return info->literal() != nullptr;

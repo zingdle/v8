@@ -1993,6 +1993,7 @@ Local<Script> UnboundScript::BindToCurrentContext() {
       i::Handle<i::SharedFunctionInfo>::cast(Utils::OpenHandle(this));
   i::Isolate* isolate = function_info->GetIsolate();
   ENTER_V8_NO_SCRIPT_NO_EXCEPTION(isolate);
+  // enter
   i::Handle<i::JSFunction> function =
       i::Factory::JSFunctionBuilder{isolate, function_info,
                                     isolate->native_context()}
@@ -2118,6 +2119,7 @@ MaybeLocal<Value> Script::Run(Local<Context> context,
   i::Handle<i::Object> options(
       i::Script::cast(fun->shared().script()).host_defined_options(), isolate);
   Local<Value> result;
+  // enter here
   has_pending_exception = !ToLocal<Value>(
       i::Execution::CallScript(isolate, fun, receiver, options), &result);
 
@@ -2563,6 +2565,7 @@ MaybeLocal<UnboundScript> ScriptCompiler::CompileUnboundInternal(
     }
   } else {
     // Compile without any cache.
+    // enter here
     maybe_function_info = i::Compiler::GetSharedFunctionInfoForScript(
         isolate, str, script_details, options, no_cache_reason,
         i::NOT_NATIVES_CODE);
@@ -2591,11 +2594,13 @@ MaybeLocal<Script> ScriptCompiler::Compile(Local<Context> context,
       !source->GetResourceOptions().IsModule(), "v8::ScriptCompiler::Compile",
       "v8::ScriptCompiler::CompileModule must be used to compile modules");
   auto isolate = context->GetIsolate();
+  // enter here
   MaybeLocal<UnboundScript> maybe =
       CompileUnboundInternal(isolate, source, options, no_cache_reason);
   Local<UnboundScript> result;
   if (!maybe.ToLocal(&result)) return MaybeLocal<Script>();
   v8::Context::Scope scope(context);
+  // enter
   return result->BindToCurrentContext();
 }
 

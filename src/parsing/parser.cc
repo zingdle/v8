@@ -530,6 +530,7 @@ void Parser::ParseProgram(Isolate* isolate, Handle<Script> script,
   }
 
   scanner_.Initialize();
+  // enter here
   FunctionLiteral* result = DoParseProgram(isolate, info);
   MaybeProcessSourceRanges(info, result, stack_limit_);
   PostProcessParseResult(isolate, info, result);
@@ -627,6 +628,7 @@ FunctionLiteral* Parser::DoParseProgram(Isolate* isolate, ParseInfo* info) {
       // Don't count the mode in the use counters--give the program a chance
       // to enable script-wide strict mode below.
       this->scope()->SetLanguageMode(info->language_mode());
+      // enter here
       ParseStatementList(&body, Token::EOS);
     }
 
@@ -2757,6 +2759,7 @@ bool Parser::SkipFunction(const AstRawString* function_name, FunctionKind kind,
   // AST. This gathers the data needed to build a lazy function.
   TRACE_EVENT0(TRACE_DISABLED_BY_DEFAULT("v8.compile"), "V8.PreParse");
 
+  // enter here
   PreParser::PreParseResult result = reusable_preparser()->PreParseFunction(
       function_name, kind, function_syntax_kind, function_scope, use_counts_,
       produced_preparse_data);

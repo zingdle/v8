@@ -636,6 +636,7 @@ MaybeLocal<T> Shell::CompileString(Isolate* isolate, Local<Context> context,
     cached_code = LookupCodeCache(isolate, source);
   }
   ScriptCompiler::Source script_source(source, origin, cached_code);
+  // enter here
   MaybeLocal<T> result =
       Compile<T>(context, &script_source,
                  cached_code ? ScriptCompiler::kConsumeCodeCache
@@ -743,6 +744,7 @@ bool Shell::ExecuteString(Isolate* isolate, Local<String> source,
       }
     }
     Local<Script> script;
+    // enter here
     if (!CompileString<Script>(isolate, context, source, origin)
              .ToLocal(&script)) {
       return false;
@@ -765,6 +767,7 @@ bool Shell::ExecuteString(Isolate* isolate, Local<String> source,
       i_script->set_host_defined_options(i::FixedArray::cast(
           *Utils::OpenHandle(*(origin.GetHostDefinedOptions()))));
     }
+    // enter here
     maybe_result = script->Run(realm);
     if (options.code_cache_options ==
         ShellOptions::CodeCacheOptions::kProduceCacheAfterExecute) {
@@ -3895,6 +3898,7 @@ bool SourceGroup::Execute(Isolate* isolate) {
     }
     Shell::set_script_executed();
     Shell::update_script_size(source->Length());
+    // entere here
     if (!Shell::ExecuteString(isolate, source, file_name, Shell::kNoPrintResult,
                               Shell::kReportExceptions,
                               Shell::kProcessMessageQueue)) {
@@ -4552,6 +4556,7 @@ int Shell::RunMain(Isolate* isolate, bool last_run) {
       Context::Scope cscope(context);
       InspectorClient inspector_client(context, options.enable_inspector);
       PerIsolateData::RealmScope realm_scope(PerIsolateData::Get(isolate));
+      // enter here
       if (!options.isolate_sources[0].Execute(isolate)) success = false;
       if (!CompleteMessageLoop(isolate)) success = false;
     }
@@ -5307,6 +5312,7 @@ int Shell::Main(int argc, char* argv[]) {
             v8::ScriptCompiler::kNoCompileOptions);
       } else {
         bool last_run = true;
+        // enter here
         result = RunMain(isolate, last_run);
       }
 

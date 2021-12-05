@@ -911,6 +911,7 @@ class ParserBase {
     // the rules given in ECMA-262, section 7.9, page 21.
     Token::Value tok = peek();
     if (V8_LIKELY(tok == Token::SEMICOLON)) {
+      // enter
       Next();
       return;
     }
@@ -5134,6 +5135,7 @@ void ParserBase<Impl>::ParseStatementList(StatementListT* body,
   }
 
   while (peek() != end_token) {
+    // enter here
     StatementT stat = ParseStatementListItem();
     if (impl()->IsNull(stat)) return;
     if (stat->IsEmptyStatement()) continue;
@@ -5200,6 +5202,7 @@ ParserBase<Impl>::ParseStatementListItem() {
     default:
       break;
   }
+  // enter here
   return ParseStatement(nullptr, nullptr, kAllowLabelledFunctionStatement);
 }
 
@@ -5305,6 +5308,7 @@ typename ParserBase<Impl>::StatementT ParserBase<Impl>::ParseStatement(
       }
       V8_FALLTHROUGH;
     default:
+      // enter
       return ParseExpressionOrLabelledStatement(labels, own_labels,
                                                 allow_function);
   }
@@ -5498,6 +5502,7 @@ ParserBase<Impl>::ParseExpressionOrLabelledStatement(
   }
 
   // Parsed expression statement, followed by semicolon.
+  // enter here
   ExpectSemicolon();
   if (expr->IsFailureExpression()) return impl()->NullStatement();
   return factory()->NewExpressionStatement(expr, pos);

@@ -3807,6 +3807,7 @@ Factory::JSFunctionBuilder::JSFunctionBuilder(Isolate* isolate,
     : isolate_(isolate), sfi_(sfi), context_(context) {}
 
 Handle<JSFunction> Factory::JSFunctionBuilder::Build() {
+  // enter here
   PrepareMap();
   PrepareFeedbackCell();
 

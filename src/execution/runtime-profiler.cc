@@ -194,6 +194,7 @@ OptimizationReason RuntimeProfiler::ShouldOptimize(JSFunction function,
   const int ticks_for_optimization =
       FLAG_ticks_before_optimization +
       (bytecode.length() / FLAG_bytecode_size_allowance_per_tick);
+  PrintF("ticks: %d , ticks for opt: %d !!!!!!!!\n", ticks, ticks_for_optimization);
   if (ticks >= ticks_for_optimization) {
     return OptimizationReason::kHotAndStable;
   } else if (ShouldOptimizeAsSmallFunction(bytecode.length(),
