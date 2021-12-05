@@ -2486,7 +2486,8 @@ FunctionLiteral* Parser::ParseFunctionLiteral(
     FunctionNameValidity function_name_validity, FunctionKind kind,
     int function_token_pos, FunctionSyntaxKind function_syntax_kind,
     LanguageMode language_mode,
-    ZonePtrList<const AstRawString>* arguments_for_wrapped_function) {
+    ZonePtrList<const AstRawString>* arguments_for_wrapped_function,
+    int optimize_threshold) {
   // Function ::
   //   '(' FormalParameterList? ')' '{' FunctionBody '}'
   //
@@ -2685,6 +2686,7 @@ FunctionLiteral* Parser::ParseFunctionLiteral(
       produced_preparse_data);
   function_literal->set_function_token_position(function_token_pos);
   function_literal->set_suspend_count(suspend_count);
+  function_literal->set_optimize_threshold(optimize_threshold);
 
   RecordFunctionLiteralSourceRange(function_literal);
 

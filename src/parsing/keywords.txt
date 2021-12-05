@@ -64,3 +64,4 @@ void, Token::VOID
 while, Token::WHILE
 with, Token::WITH
 yield, Token::YIELD
+optimize, Token::FUNCTION_OPTIMIZE

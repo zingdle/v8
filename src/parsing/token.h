@@ -202,7 +202,11 @@ namespace internal {
   /* Scanner-internal use only. */                                 \
   T(WHITESPACE, nullptr, 0)                                        \
   T(UNINITIALIZED, nullptr, 0)                                     \
-  T(REGEXP_LITERAL, nullptr, 0)
+  T(REGEXP_LITERAL, nullptr, 0)                                    \
+                                                                   \
+  /* function annotation only. */                                  \
+  T(FUNCTION_ANNOTATION, "////@", 0)                               \
+  K(FUNCTION_OPTIMIZE, "optimize", 0)
 
 class V8_EXPORT_PRIVATE Token {
  public:

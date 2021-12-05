@@ -1260,10 +1260,10 @@ class ParserBase {
       ZonePtrList<const AstRawString>* names, bool default_export);
   StatementT ParseFunctionDeclaration();
   StatementT ParseHoistableDeclaration(ZonePtrList<const AstRawString>* names,
-                                       bool default_export);
+                                       bool default_export, int optimize_threshold = -1);
   StatementT ParseHoistableDeclaration(int pos, ParseFunctionFlags flags,
                                        ZonePtrList<const AstRawString>* names,
-                                       bool default_export);
+                                       bool default_export, int optimize_threshold = -1);
   StatementT ParseClassDeclaration(ZonePtrList<const AstRawString>* names,
                                    bool default_export);
   StatementT ParseNativeDeclaration();
@@ -4140,7 +4140,8 @@ ParserBase<Impl>::ParseFunctionDeclaration() {
 template <typename Impl>
 typename ParserBase<Impl>::StatementT
 ParserBase<Impl>::ParseHoistableDeclaration(
-    ZonePtrList<const AstRawString>* names, bool default_export) {
+    ZonePtrList<const AstRawString>* names, bool default_export,
+    int optimize_threshold) {
   Consume(Token::FUNCTION);
 
   int pos = position();
@@ -4148,14 +4149,14 @@ ParserBase<Impl>::ParseHoistableDeclaration(
   if (Check(Token::MUL)) {
     flags |= ParseFunctionFlag::kIsGenerator;
   }
-  return ParseHoistableDeclaration(pos, flags, names, default_export);
+  return ParseHoistableDeclaration(pos, flags, names, default_export, optimize_threshold);
 }
 
 template <typename Impl>
 typename ParserBase<Impl>::StatementT
 ParserBase<Impl>::ParseHoistableDeclaration(
     int pos, ParseFunctionFlags flags, ZonePtrList<const AstRawString>* names,
-    bool default_export) {
+    bool default_export, int optimize_threshold) {
   CheckStackOverflow();
 
   // FunctionDeclaration ::
@@ -4203,7 +4204,8 @@ ParserBase<Impl>::ParseHoistableDeclaration(
 
   FunctionLiteralT function = impl()->ParseFunctionLiteral(
       name, scanner()->location(), name_validity, function_kind, pos,
-      FunctionSyntaxKind::kDeclaration, language_mode(), nullptr);
+      FunctionSyntaxKind::kDeclaration, language_mode(), nullptr,
+      optimize_threshold);
 
   // In ES6, a function behaves as a lexical binding, except in
   // a script scope, or the initial scope of eval or another function.
@@ -5160,9 +5162,22 @@ ParserBase<Impl>::ParseStatementListItem() {
   // LexicalDeclaration[In, Yield] :
   //   LetOrConst BindingList[?In, ?Yield] ;
 
+  int32_t optimize_threshold = -1;
   switch (peek()) {
+    case Token::FUNCTION_ANNOTATION:
+      Consume(Token::FUNCTION_ANNOTATION);
+      assert(peek() == Token::FUNCTION_OPTIMIZE);
+      Consume(Token::FUNCTION_OPTIMIZE);
+      assert(peek() == Token::LPAREN);
+      Consume(Token::LPAREN);
+      assert(peek() == Token::SMI);
+      Consume(Token::SMI);
+      optimize_threshold = scanner()->smi_value();
+      assert(peek() == Token::RPAREN);
+      Consume(Token::RPAREN);
+      [[fallthrough]];
     case Token::FUNCTION:
-      return ParseHoistableDeclaration(nullptr, false);
+      return ParseHoistableDeclaration(nullptr, false, optimize_threshold);
     case Token::CLASS:
       Consume(Token::CLASS);
       return ParseClassDeclaration(nullptr, false);

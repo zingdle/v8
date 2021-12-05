@@ -57,6 +57,8 @@ namespace internal {
   KEYWORD_GROUP('n')                                        \
   KEYWORD("new", Token::NEW)                                \
   KEYWORD("null", Token::NULL_LITERAL)                      \
+  KEYWORD_GROUP('o')                                        \
+  KEYWORD("optimize", Token::FUNCTION_OPTIMIZE)             \
   KEYWORD_GROUP('p')                                        \
   KEYWORD("package", Token::FUTURE_STRICT_RESERVED_WORD)    \
   KEYWORD("private", Token::FUTURE_STRICT_RESERVED_WORD)    \
@@ -460,6 +462,14 @@ V8_INLINE Token::Value Scanner::ScanSingleToken() {
               Advance();
               token = SkipSourceURLComment();
               continue;
+            }
+            if (c == '/') {
+              // TODO: check syntax error
+              Advance();
+              Advance();
+              Advance();
+              Advance();
+              return Token::FUNCTION_ANNOTATION;
             }
             token = SkipSingleLineComment();
             continue;

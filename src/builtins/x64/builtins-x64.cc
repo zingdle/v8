@@ -1229,6 +1229,48 @@ void Builtins::Generate_InterpreterEntryTrampoline(MacroAssembler* masm) {
   __ incl(
       FieldOperand(feedback_vector, FeedbackVector::kInvocationCountOffset));
 
+  // Load invocation count
+  Register invocation_cnt = rcx;
+  __ movl(invocation_cnt,
+        FieldOperand(feedback_vector, FeedbackVector::kInvocationCountOffset));
+
+  // Load optimization threshold
+  Register optimize_threshold = r15;
+  __ LoadTaggedPointerField(
+      kScratchRegister,
+      FieldOperand(closure, JSFunction::kSharedFunctionInfoOffset));
+  __ movl(optimize_threshold,
+        FieldOperand(kScratchRegister, SharedFunctionInfo::kOptimizeThresholdOffset));
+
+  // Interpreter mode when we haven't reach the optimization threshold
+  __ cmpl(invocation_cnt, optimize_threshold);
+  __ j(below, &push_stack_frame);
+
+  // Call OptimizeFunctionOnNextCall(closure)
+  __ Push(rax);
+  __ Push(rdi);
+  __ Push(rdx);
+  __ Push(rsi);
+  __ Push(rbx);
+  __ Push(kScratchRegister);
+  __ Push(kInterpreterBytecodeArrayRegister);
+  __ Push(optimization_state);
+  {
+    FrameScope scope(masm, StackFrame::INTERNAL);
+
+    __ Push(closure);
+    __ CallRuntime(Runtime::kOptimizeFunctionOnNextCall, 1);
+    __ Pop(closure);
+  }
+  __ Pop(optimization_state);
+  __ Pop(kInterpreterBytecodeArrayRegister);
+  __ Pop(kScratchRegister);
+  __ Pop(rbx);
+  __ Pop(rsi);
+  __ Pop(rdx);
+  __ Pop(rdi);
+  __ Pop(rax);
+
   // Open a frame scope to indicate that there is a frame on the stack.  The
   // MANUAL indicates that the scope shouldn't actually generate code to set up
   // the frame (that is done below).

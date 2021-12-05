@@ -499,6 +499,8 @@ void SharedFunctionInfo::InitFromFunctionLiteral(
   shared_info->set_allows_lazy_compilation(lit->AllowsLazyCompilation());
   shared_info->set_language_mode(lit->language_mode());
   shared_info->set_function_literal_id(lit->function_literal_id());
+  shared_info->set_optimize_threshold(lit->optimize_threshold());
+  shared_info->set_force_optimize(false);
   // FunctionKind must have already been set.
   DCHECK(lit->kind() == shared_info->kind());
   DCHECK_IMPLIES(lit->requires_instance_members_initializer(),

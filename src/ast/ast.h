@@ -2258,6 +2258,11 @@ class FunctionLiteral final : public Expression {
     return produced_preparse_data_;
   }
 
+  int optimize_threshold() const { return optimize_threshold_; }
+  void set_optimize_threshold(int optimize_threshold) {
+    optimize_threshold_ = optimize_threshold;
+  }
+
  private:
   friend class AstNodeFactory;
   friend Zone;
@@ -2278,6 +2283,7 @@ class FunctionLiteral final : public Expression {
         function_token_position_(kNoSourcePosition),
         suspend_count_(0),
         function_literal_id_(function_literal_id),
+        optimize_threshold_(-1),
         raw_name_(name),
         scope_(scope),
         body_(body.ToConstVector(), zone),
@@ -2314,6 +2320,7 @@ class FunctionLiteral final : public Expression {
   int function_token_position_;
   int suspend_count_;
   int function_literal_id_;
+  int optimize_threshold_;
 
   const AstConsString* raw_name_;
   DeclarationScope* scope_;
