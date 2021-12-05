@@ -149,6 +149,8 @@ void SharedFunctionInfo::set_relaxed_flags(int32_t flags) {
 
 UINT8_ACCESSORS(SharedFunctionInfo, flags2, kFlags2Offset)
 
+// INT32_ACCESSORS(SharedFunctionInfo, optimize_threshold, kOptimizeThresholdOffset)
+
 bool SharedFunctionInfo::HasSharedName() const {
   Object value = name_or_scope_info(kAcquireLoad);
   if (value.IsScopeInfo()) {

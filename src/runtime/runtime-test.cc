@@ -294,6 +294,7 @@ Object OptimizeFunctionOnNextCall(RuntimeArguments& args, Isolate* isolate,
 
   // PrintF("handle base %lu\n", function->address());
   function->shared().set_force_optimize(true);
+  PrintF("!!!optimzation threshold: %d\n", function->shared().optimize_threshold());
 
   IsCompiledScope is_compiled_scope(
       function->shared().is_compiled_scope(isolate));

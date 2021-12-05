@@ -1574,6 +1574,7 @@ void SharedFunctionInfo::SharedFunctionInfoPrint(std::ostream& os) {
   if (has_static_private_methods_or_accessors()) {
     os << "\n - has_static_private_methods_or_accessors";
   }
+  os << "\n - optimize threshold: " << optimize_threshold();
   os << "\n - kind: " << kind();
   os << "\n - syntax kind: " << syntax_kind();
   os << "\n - function_map_index: " << function_map_index();

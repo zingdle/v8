@@ -1017,6 +1017,8 @@ FunctionLiteral* Parser::DoParseFunction(Isolate* isolate, ParseInfo* info,
         flags().class_scope_has_private_brand());
     result->set_has_static_private_methods_or_accessors(
         flags().has_static_private_methods_or_accessors());
+    // FIXME: add here?
+    // result->set_optimize_threshold(1);
   }
 
   DCHECK_IMPLIES(result, function_literal_id == result->function_literal_id());
@@ -2486,7 +2488,8 @@ FunctionLiteral* Parser::ParseFunctionLiteral(
     FunctionNameValidity function_name_validity, FunctionKind kind,
     int function_token_pos, FunctionSyntaxKind function_syntax_kind,
     LanguageMode language_mode,
-    ZonePtrList<const AstRawString>* arguments_for_wrapped_function) {
+    ZonePtrList<const AstRawString>* arguments_for_wrapped_function,
+    uint32_t optimize_threshold) {
   // Function ::
   //   '(' FormalParameterList? ')' '{' FunctionBody '}'
   //
@@ -2685,6 +2688,7 @@ FunctionLiteral* Parser::ParseFunctionLiteral(
       produced_preparse_data);
   function_literal->set_function_token_position(function_token_pos);
   function_literal->set_suspend_count(suspend_count);
+  function_literal->set_optimize_threshold(optimize_threshold);
 
   RecordFunctionLiteralSourceRange(function_literal);
 

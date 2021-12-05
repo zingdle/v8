@@ -841,6 +841,9 @@ const char* AstPrinter::PrintProgram(FunctionLiteral* program) {
     if (program->has_static_private_methods_or_accessors()) {
       Print(" HAS STATIC PRIVATE METHODS\n");
     }
+    if (program->optimize_threshold() != ~0) {
+      Print(" OPTIMIZE THRESHOLD: %d\n", program->optimize_threshold());
+    }
     PrintParameters(program->scope());
     PrintDeclarations(program->scope()->declarations());
     PrintStatements(program->body());

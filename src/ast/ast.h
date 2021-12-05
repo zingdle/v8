@@ -2230,6 +2230,11 @@ class FunctionLiteral final : public Expression {
     function_literal_id_ = function_literal_id;
   }
 
+  int optimize_threshold() const { return optimize_threshold_; }
+  void set_optimize_threshold(int optimize_threshold) {
+    optimize_threshold_ = optimize_threshold;
+  }
+
   void set_requires_instance_members_initializer(bool value) {
     bit_field_ = RequiresInstanceMembersInitializer::update(bit_field_, value);
   }
@@ -2269,7 +2274,7 @@ class FunctionLiteral final : public Expression {
                   int function_length, FunctionSyntaxKind function_syntax_kind,
                   ParameterFlag has_duplicate_parameters,
                   EagerCompileHint eager_compile_hint, int position,
-                  bool has_braces, int function_literal_id,
+                  bool has_braces, int function_literal_id, int optimize_threshold,
                   ProducedPreparseData* produced_preparse_data = nullptr)
       : Expression(position, kFunctionLiteral),
         expected_property_count_(expected_property_count),
@@ -2278,6 +2283,7 @@ class FunctionLiteral final : public Expression {
         function_token_position_(kNoSourcePosition),
         suspend_count_(0),
         function_literal_id_(function_literal_id),
+        optimize_threshold_(optimize_threshold),
         raw_name_(name),
         scope_(scope),
         body_(body.ToConstVector(), zone),
@@ -2314,6 +2320,7 @@ class FunctionLiteral final : public Expression {
   int function_token_position_;
   int suspend_count_;
   int function_literal_id_;
+  int optimize_threshold_;
 
   const AstConsString* raw_name_;
   DeclarationScope* scope_;
@@ -3188,12 +3195,13 @@ class AstNodeFactory final {
       FunctionLiteral::EagerCompileHint eager_compile_hint, int position,
       bool has_braces, int function_literal_id,
       ProducedPreparseData* produced_preparse_data = nullptr) {
+    // FIXME: ~0
     return zone_->New<FunctionLiteral>(
         zone_, name ? ast_value_factory_->NewConsString(name) : nullptr,
         ast_value_factory_, scope, body, expected_property_count,
         parameter_count, function_length, function_syntax_kind,
         has_duplicate_parameters, eager_compile_hint, position, has_braces,
-        function_literal_id, produced_preparse_data);
+        function_literal_id, ~0, produced_preparse_data);
   }
 
   // Creates a FunctionLiteral representing a top-level script, the
@@ -3202,13 +3210,14 @@ class AstNodeFactory final {
   FunctionLiteral* NewScriptOrEvalFunctionLiteral(
       DeclarationScope* scope, const ScopedPtrList<Statement>& body,
       int expected_property_count, int parameter_count) {
+    // FIXME: ~0 is correct?
     return zone_->New<FunctionLiteral>(
         zone_, ast_value_factory_->empty_cons_string(), ast_value_factory_,
         scope, body, expected_property_count, parameter_count, parameter_count,
         FunctionSyntaxKind::kAnonymousExpression,
         FunctionLiteral::kNoDuplicateParameters,
         FunctionLiteral::kShouldLazyCompile, 0, /* has_braces */ false,
-        kFunctionLiteralIdTopLevel);
+        kFunctionLiteralIdTopLevel, ~0);
   }
 
   ClassLiteral::Property* NewClassLiteralProperty(

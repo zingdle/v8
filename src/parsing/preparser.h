@@ -1017,7 +1017,8 @@ class PreParser : public ParserBase<PreParser> {
       FunctionNameValidity function_name_validity, FunctionKind kind,
       int function_token_pos, FunctionSyntaxKind function_syntax_kind,
       LanguageMode language_mode,
-      ZonePtrList<const AstRawString>* arguments_for_wrapped_function);
+      ZonePtrList<const AstRawString>* arguments_for_wrapped_function,
+      uint32_t optimize_threshold = ~0);
 
   PreParserExpression InitializeObjectLiteral(PreParserExpression literal) {
     return literal;

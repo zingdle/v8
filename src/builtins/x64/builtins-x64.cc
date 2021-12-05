@@ -1234,12 +1234,19 @@ void Builtins::Generate_InterpreterEntryTrampoline(MacroAssembler* masm) {
   __ movl(invocation_cnt,
         FieldOperand(feedback_vector, FeedbackVector::kInvocationCountOffset));
 
-  Register optimize_cnt = r15;
-  __ movl(optimize_cnt,
-        FieldOperand(feedback_vector, FeedbackVector::kOptimizeCountOffset));
+  // load optimization threshold
+  // Register optimize_cnt = r15;
+  // __ movl(optimize_cnt,
+  //       FieldOperand(feedback_vector, FeedbackVector::kOptimizeCountOffset));
+  Register optimize_threshold = r15;
+  __ LoadTaggedPointerField(
+      kScratchRegister,
+      FieldOperand(closure, JSFunction::kSharedFunctionInfoOffset));
+  __ movl(optimize_threshold,
+        FieldOperand(kScratchRegister, SharedFunctionInfo::kOptimizeThresholdOffset));
 
   // __ cmpl(invocation_cnt, Immediate(5));
-  __ cmpl(invocation_cnt, optimize_cnt);
+  __ cmpl(invocation_cnt, optimize_threshold);
   __ j(below, &push_stack_frame);
 
   __ Push(rax);
@@ -1266,7 +1273,6 @@ void Builtins::Generate_InterpreterEntryTrampoline(MacroAssembler* masm) {
   __ Pop(rdx);
   __ Pop(rdi);
   __ Pop(rax);
-
 
   // Open a frame scope to indicate that there is a frame on the stack.  The
   // MANUAL indicates that the scope shouldn't actually generate code to set up
